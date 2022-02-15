@@ -33,7 +33,7 @@ function drawNode(x,y,depth) {
   fill((depth + 1) / maxDepth * 255);
   ellipse(x,y,size * 2,size * 2);
   if(depth > 0) {
-    //As long as the depth is positive, iterate between x = -1 to 1, and y = -1 to 1
+    //As long as the depth is positive, iterate between dx = -1 to 1, and dy = -1 to 1
     for(var dx = -1; dx <= 1; dx++) {
       for(var dy = -1; dy <= 1; dy++) {
         //Only iterate if either dx == 0 or dy == 0
