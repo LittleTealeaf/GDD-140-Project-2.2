@@ -1,18 +1,46 @@
 /// <reference path="./libraries/p5.d.ts" />
 
-var INTERPOLATE_RATE = 0.1;
-var MAX_DEPTH = 6;
-var NODE_WIDTH = 17;
-var CONNECTION_WIDTH = 50;
-var CONNECTION_LENGTH = 100;
-var BRANCH_CHANCE = 1;
+/**
+ * Rate at which rectangles are interpolated at
+ */
+var INTERPOLATE_RATE = 0.05;
+/**
+ * Max build depth of the layout
+ */
+var MAX_DEPTH = 7;
+/**
+ * How wide to start the base nodes at
+ * Gradually decreased at lower depths
+ */
+var NODE_WIDTH = 60;
+/**
+ * How wide to start the connectors at
+ * Gradually decreased at lower depths
+ */
+var CONNECTION_WIDTH = 40;
+/**
+ * How long to start the connectors at
+ * Gradually decreased at lower depths
+ */
+var CONNECTION_LENGTH = 60;
+/**
+ * % chance to make a new branch in a given direction, starting value
+ * Gradually decreased at lower depths
+ */
+var BRANCH_CHANCE = 0.9;
 
+/*
+These are the current values of the rendered rectangles
+*/
 var x_currents = [];
 var y_currents = [];
 var w_currents = [];
 var h_currents = [];
 var c_currents = [];
 var currentCount = 0;
+/*
+These are the goal values of the rendered rectangles
+*/
 var x_goals = [];
 var y_goals = [];
 var w_goals = [];
@@ -22,32 +50,27 @@ var goalCount = 0;
 
 function setup() {
   createCanvas(600, 600);
-  initializeVariables();
   rectMode(CENTER);
   newLayout();
 }
 
-function initializeVariables() {
-  x_currents = [];
-  y_currents = [];
-  w_currents = [];
-  h_currents = [];
-  c_currents = [];
-  currentCount = 0;
-  x_goals = [];
-  y_goals = [];
-  h_goals = [];
-  w_goals = [];
-  c_goals = [];
-  goalCount = 0;
-}
-
+/**
+ * Order of calling functions
+ */
 function draw() {
   background("#19224f");
   updateListLengths();
   updateRects();
   drawRects();
 }
+
+/**
+ * Creates a new layout whenever the mouse is clicked
+ */
+ function mouseClicked() {
+  newLayout();
+}
+
 
 /**
  * Updates the attributes of the current rects to move towards their goal positions
@@ -105,9 +128,6 @@ function updateListLengths() {
   }
 }
 
-function mouseClicked() {
-  newLayout();
-}
 
 function clearGoals() {
   goalCount = 0;
@@ -135,11 +155,20 @@ function addGoal(x,y,w,h,c) {
   goalCount++;
 }
 
+/**
+ * Clears the entire board and makes a new layout starting at the central node
+ */
 function newLayout() {
   clearGoals();
   newNode(width/2,height/2,MAX_DEPTH)
 }
 
+/**
+ * Creates a new node, randomly recursively branches off until depth is depleted
+ * @param {float} x 
+ * @param {float} y 
+ * @param {int} depth 
+ */
 function newNode(x,y,depth) {
   var c = depth / MAX_DEPTH * 255;
   addGoal(x,y,NODE_WIDTH * depth / MAX_DEPTH,NODE_WIDTH * depth / MAX_DEPTH,c);
@@ -154,7 +183,7 @@ function newNode(x,y,depth) {
             var length = CONNECTION_LENGTH * depth / MAX_DEPTH;
             var width = CONNECTION_WIDTH * depth / MAX_DEPTH;
             addGoal(x + dx * length, y + dy * length, (length - width)* dx + width, (length - width) * dy + width );
-            newNode(x + dx * length * 2, y + dy * width * 2, depth - 1);
+            newNode(x + dx * length * 2, y + dy * length * 2, depth - 1);
           }
         }
       }
