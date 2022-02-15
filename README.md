@@ -1,6 +1,6 @@
-# GDD-140-Template
+# GDD-140 Project 2.2
 
-<!-- Github-Pages status goes here -->
+[![pages-build-deployment](https://github.com/LittleTealeaf/GDD-140-Project-2.2/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/LittleTealeaf/GDD-140-Project-2.2/actions/workflows/pages/pages-build-deployment)
 
 [**View Deployment**](https://littletealeaf.github.io/GDD-140-Project-2.2/)
 
