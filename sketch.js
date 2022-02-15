@@ -1,4 +1,4 @@
-/// <reference path="./libraries/p5.d.ts" />
+/// <reference path="./libraries/p5.global-mode.d.ts" />
 
 /**
  * Rate at which rectangles are interpolated at
@@ -77,11 +77,12 @@ function draw() {
  */
 function updateRects() {
   for(var i = 0; i < currentCount; i++) {
-    x_currents[i] = interpolate(x_currents[i],x_goals[i]);
-    y_currents[i] = interpolate(y_currents[i],y_goals[i]);
-    w_currents[i] = interpolate(w_currents[i],w_goals[i]);
-    h_currents[i] = interpolate(h_currents[i],h_goals[i]);
-    c_currents[i] = interpolate(c_currents[i],c_goals[i]);
+    var goalI = int(i % goalCount);
+    x_currents[i] = interpolate(x_currents[i],x_goals[goalI]);
+    y_currents[i] = interpolate(y_currents[i],y_goals[goalI]);
+    w_currents[i] = interpolate(w_currents[i],w_goals[goalI]);
+    h_currents[i] = interpolate(h_currents[i],h_goals[goalI]);
+    c_currents[i] = interpolate(c_currents[i],c_goals[goalI]);
   }
 }
 
@@ -100,8 +101,8 @@ function interpolate(current,goal) {
  */
 function drawRects() {
   for(var i = 0; i < currentCount; i++) {
-    fill(c_currents[i]);
-    rect(x_currents[i],y_currents[i],w_currents[i],h_currents[i]);
+    fill(int(c_currents[i]));
+    rect(x_currents[i], y_currents[i], w_currents[i], h_currents[i]);
   }
 }
 
@@ -110,14 +111,6 @@ function drawRects() {
  * Updates the arrays in currents to match the lengths of the goals
  */
 function updateListLengths() {
-  while(currentCount > goalCount) {
-    x_currents.pop();
-    y_currents.pop();
-    h_currents.pop();
-    w_currents.pop();
-    c_currents.pop();
-    currentCount--;
-  }
   while(currentCount < goalCount) {
     x_currents.push(width/2);
     y_currents.push(height/2);
@@ -170,7 +163,7 @@ function newLayout() {
  * @param {int} depth 
  */
 function newNode(x,y,depth) {
-  var c = depth / MAX_DEPTH * 255;
+  var c = int(depth / MAX_DEPTH * 255);
   addGoal(x,y,NODE_WIDTH * depth / MAX_DEPTH,NODE_WIDTH * depth / MAX_DEPTH,c);
   if(depth > 0) {
     //As long as the depth is positive, iterate between dx = -1 to 1, and dy = -1 to 1
@@ -182,7 +175,7 @@ function newNode(x,y,depth) {
           if(Math.random() < BRANCH_CHANCE * depth / MAX_DEPTH) {
             var length = CONNECTION_LENGTH * depth / MAX_DEPTH;
             var width = CONNECTION_WIDTH * depth / MAX_DEPTH;
-            addGoal(x + dx * length, y + dy * length, (length - width)* dx + width, (length - width) * dy + width );
+            addGoal(x + dx * length, y + dy * length, (length - width)* dx + width, (length - width) * dy + width,c);
             newNode(x + dx * length * 2, y + dy * length * 2, depth - 1);
           }
         }
