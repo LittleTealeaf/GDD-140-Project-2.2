@@ -9,8 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: run setup script
-        run: ./setup.sh
+
       - name: Publish to Github Pages
         if: success()
         uses: peaceiris/actions-gh-pages@v3
